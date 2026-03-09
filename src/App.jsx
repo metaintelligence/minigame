@@ -1,9 +1,11 @@
-﻿import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import RacingGamePage from './RacingGamePage'
 import rabbitPetFaceIcon from './assets/rabbit-pet-face.svg'
 
 const VIEW_HUB = 'hub'
 const VIEW_RACING = 'racing'
+const TITLE_HUB = '미니게임'
+const TITLE_RACING = '달려달려'
 
 const RACING_CARD = {
   id: VIEW_RACING,
@@ -61,12 +63,17 @@ function GameHub({ onEnterRacing }) {
           })}
         </section>
       </section>
+      <footer className='game-hub-footer'>© 2026 MetaIntelligence. Inc. All rights reserved.</footer>
     </main>
   )
 }
 
 export default function App() {
   const [view, setView] = useState(VIEW_HUB)
+
+  useEffect(() => {
+    document.title = view === VIEW_RACING ? TITLE_RACING : TITLE_HUB
+  }, [view])
 
   if (view === VIEW_RACING) {
     return (
@@ -83,4 +90,3 @@ export default function App() {
 
   return <GameHub onEnterRacing={() => setView(VIEW_RACING)} />
 }
-

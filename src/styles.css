@@ -44,6 +44,8 @@ body {
 .game-hub-page {
   min-height: 100vh;
   padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
   background:
     radial-gradient(900px 420px at 12% -15%, rgba(61, 91, 143, 0.42), transparent 58%),
     radial-gradient(900px 480px at 100% 0%, rgba(35, 91, 86, 0.36), transparent 62%),
@@ -55,6 +57,7 @@ body {
   margin: 0 auto;
   display: grid;
   gap: 18px;
+  flex: 1;
 }
 
 .game-hub-header {
@@ -157,6 +160,14 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   padding: 3px 8px;
+}
+
+.game-hub-footer {
+  width: min(1100px, 100%);
+  margin: 22px auto 0;
+  color: #86a0c5;
+  font-size: 0.78rem;
+  text-align: center;
 }
 
 @media (max-width: 760px) {
