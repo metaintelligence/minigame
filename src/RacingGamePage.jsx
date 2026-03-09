@@ -47,13 +47,34 @@ const RACING_SFX_VOLUME_SCALE = 0.7
 const RACING_BGM_BASE_VOLUME = 0.36 * RACING_BGM_VOLUME_SCALE
 const RACING_BGM_FADE_MS = 700
 const APP_BASE_URL = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/')
+const APP_PATH_BASE_URL = (() => {
+  if (typeof window === 'undefined') return APP_BASE_URL
+  const firstPathSegment = window.location.pathname.split('/').filter(Boolean)[0]
+  if (!firstPathSegment) return '/'
+  return `/${firstPathSegment}/`
+})()
+const SOUND_BASE_URL_CANDIDATES = Array.from(new Set([APP_BASE_URL, APP_PATH_BASE_URL, '/']))
+const SOUND_PATHS = {
+  bgmWaiting: 'sound/bgm_waiting.mp3',
+  bgmPlaying: 'sound/bgm_playing.mp3',
+  throwing: 'sound/throwing.wav',
+  boost: 'sound/boost.wav',
+  stun: 'sound/stun.wav',
+  shield: 'sound/shield.wav'
+}
+const SOUND_SOURCE_CANDIDATES = Object.fromEntries(
+  Object.entries(SOUND_PATHS).map(([key, soundPath]) => [
+    key,
+    SOUND_BASE_URL_CANDIDATES.map((basePath) => `${basePath}${soundPath}`)
+  ])
+)
 const SOUND_SOURCES = {
-  bgmWaiting: `${APP_BASE_URL}sound/bgm_waiting.mp3`,
-  bgmPlaying: `${APP_BASE_URL}sound/bgm_playing.mp3`,
-  throwing: `${APP_BASE_URL}sound/throwing.wav`,
-  boost: `${APP_BASE_URL}sound/boost.wav`,
-  stun: `${APP_BASE_URL}sound/stun.wav`,
-  shield: `${APP_BASE_URL}sound/shield.wav`
+  bgmWaiting: SOUND_SOURCE_CANDIDATES.bgmWaiting[0],
+  bgmPlaying: SOUND_SOURCE_CANDIDATES.bgmPlaying[0],
+  throwing: SOUND_SOURCE_CANDIDATES.throwing[0],
+  boost: SOUND_SOURCE_CANDIDATES.boost[0],
+  stun: SOUND_SOURCE_CANDIDATES.stun[0],
+  shield: SOUND_SOURCE_CANDIDATES.shield[0]
 }
 const LANE_SCENERY_POSITIONS = [4, 12, 20, 28, 36, 44, 52, 60, 68, 76, 84, 92, 100, 108]
 const LANE_SCENERY_LANE_OFFSET_PERCENT = 7
@@ -183,6 +204,9 @@ export default function RacingGamePage() {
   const boostSfxRef = useRef(null)
   const stunSfxRef = useRef(null)
   const shieldBreakSfxRef = useRef(null)
+  const soundSourceIndexRef = useRef(
+    Object.fromEntries(Object.keys(SOUND_SOURCE_CANDIDATES).map((key) => [key, 0]))
+  )
   const racersRef = useRef([])
   const projectilesRef = useRef([])
   const mapHazardsRef = useRef([])
@@ -349,6 +373,23 @@ export default function RacingGamePage() {
       playPromise.catch(() => {})
     }
   }, [])
+
+  const fallbackToNextSoundSource = useCallback((soundKey, audioRef) => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    const candidates = SOUND_SOURCE_CANDIDATES[soundKey]
+    if (!Array.isArray(candidates) || candidates.length < 2) return
+
+    const currentIndex = soundSourceIndexRef.current[soundKey] ?? 0
+    const nextIndex = currentIndex + 1
+    if (nextIndex >= candidates.length) return
+
+    soundSourceIndexRef.current[soundKey] = nextIndex
+    audio.src = candidates[nextIndex]
+    audio.load()
+    safePlayAudio(audio)
+  }, [safePlayAudio])
 
   const runBgmFade = useCallback(
     (primaryAudio, secondaryAudio, primaryTargetVolume, secondaryTargetVolume, options = {}) => {
@@ -1539,12 +1580,44 @@ export default function RacingGamePage() {
         )}
       </div>
 
-      <audio ref={waitingBgmRef} src={SOUND_SOURCES.bgmWaiting} preload='auto' loop />
-      <audio ref={playingBgmRef} src={SOUND_SOURCES.bgmPlaying} preload='auto' loop />
-      <audio ref={throwingSfxRef} src={SOUND_SOURCES.throwing} preload='auto' />
-      <audio ref={boostSfxRef} src={SOUND_SOURCES.boost} preload='auto' />
-      <audio ref={stunSfxRef} src={SOUND_SOURCES.stun} preload='auto' />
-      <audio ref={shieldBreakSfxRef} src={SOUND_SOURCES.shield} preload='auto' />
+      <audio
+        ref={waitingBgmRef}
+        src={SOUND_SOURCES.bgmWaiting}
+        preload='auto'
+        loop
+        onError={() => fallbackToNextSoundSource('bgmWaiting', waitingBgmRef)}
+      />
+      <audio
+        ref={playingBgmRef}
+        src={SOUND_SOURCES.bgmPlaying}
+        preload='auto'
+        loop
+        onError={() => fallbackToNextSoundSource('bgmPlaying', playingBgmRef)}
+      />
+      <audio
+        ref={throwingSfxRef}
+        src={SOUND_SOURCES.throwing}
+        preload='auto'
+        onError={() => fallbackToNextSoundSource('throwing', throwingSfxRef)}
+      />
+      <audio
+        ref={boostSfxRef}
+        src={SOUND_SOURCES.boost}
+        preload='auto'
+        onError={() => fallbackToNextSoundSource('boost', boostSfxRef)}
+      />
+      <audio
+        ref={stunSfxRef}
+        src={SOUND_SOURCES.stun}
+        preload='auto'
+        onError={() => fallbackToNextSoundSource('stun', stunSfxRef)}
+      />
+      <audio
+        ref={shieldBreakSfxRef}
+        src={SOUND_SOURCES.shield}
+        preload='auto'
+        onError={() => fallbackToNextSoundSource('shield', shieldBreakSfxRef)}
+      />
 
       {raceCompleted ? (
         <section className='race-ranking'>

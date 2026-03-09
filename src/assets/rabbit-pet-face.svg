@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 96" role="img" aria-label="Rabbit pet face icon">
+  <ellipse cx="64" cy="84" rx="38" ry="8" fill="rgba(8, 13, 24, 0.35)" />
+
+  <ellipse cx="44" cy="30" rx="11" ry="25" transform="rotate(-8 44 30)" fill="#ffffff" />
+  <ellipse cx="43" cy="30" rx="5" ry="16" transform="rotate(-8 43 30)" fill="#f5d8df" />
+  <ellipse cx="68" cy="28" rx="11" ry="27" transform="rotate(8 68 28)" fill="#ffffff" />
+  <ellipse cx="68" cy="28" rx="5" ry="17" transform="rotate(8 68 28)" fill="#f5d8df" />
+
+  <ellipse cx="45" cy="68" rx="18" ry="17" fill="#f0f4fb" />
+  <ellipse cx="77" cy="67" rx="28" ry="20" fill="#edf2fa" />
+  <ellipse cx="82" cy="74" rx="16" ry="14" fill="#eef2f9" />
+
+  <ellipse cx="62" cy="50" rx="33" ry="28" fill="#ffffff" />
+  <ellipse cx="89" cy="52" rx="20" ry="19" fill="#f7f9fc" />
+
+  <circle cx="56" cy="47" r="6.5" fill="#35445f" />
+  <circle cx="58" cy="45" r="2.3" fill="#f4f8ff" />
+  <circle cx="79" cy="49" r="6.2" fill="#364760" />
+  <circle cx="81" cy="47" r="2.1" fill="#f4f8ff" />
+
+  <ellipse cx="57" cy="59" rx="4.8" ry="3.5" fill="#f8e2e8" />
+  <ellipse cx="75" cy="60" rx="4.6" ry="3.4" fill="#f8e2e8" />
+
+  <path d="M66 57 C68 55, 71 55, 72 57 C71 60, 67 60, 66 57 Z" fill="#f2b6c0" />
+  <path d="M69 58 L69 63 M69 63 C66.5 65.5, 63 65.7, 60 63.5 M69 63 C71.5 65.6, 75.5 65.8, 78.5 63.4" stroke="#d38b96" stroke-width="1.4" stroke-linecap="round" fill="none" />
+
+  <path d="M56 71 L68 73 L56 82 Z" fill="#ff8da1" />
+  <path d="M81 73 L70 74 L81 83 Z" fill="#ff8da1" />
+  <circle cx="69" cy="74" r="4.7" fill="#f3edf8" stroke="rgba(92, 108, 146, 0.35)" />
+</svg>
